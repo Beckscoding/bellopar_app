@@ -19,7 +19,7 @@ st.divider()
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # Fetch existing vendors data
-existing_data = conn.read(worksheet="Clientes", usecols=list(range(8)), ttl=1)
+existing_data = conn.read(worksheet="Clientes", usecols=list(range(9)), ttl=1)
 existing_data = existing_data.dropna(how="all")
 
 # Check if the ID column exists, and find the max ID
@@ -35,13 +35,14 @@ with st.form(key="my_form", clear_on_submit=True):
 
     name = st.text_input(label="Nome")
     col1, col2 = st.columns(2)
-    address = col2.text_input(label="Endereço")
-    district = col1.text_input(label="Bairro")
+    address = col1.text_input(label="Endereço")
+    district = col2.text_input(label="Bairro")
     city = col1.text_input(label="Cidade")
     phone = col1.text_input(label="Telefone")
     email = col2.text_input(label="E-mail")
+    numero_pe = col2.text_input(label="Número Calçado")
+    doc = col1.text_input(label="CPF")
     obs = st.text_area(label="Observações")
-
     # Create a button to submit the form
     submit = st.form_submit_button(label="Submit")
 
@@ -54,11 +55,13 @@ with st.form(key="my_form", clear_on_submit=True):
         new_row = pd.DataFrame(
             {   "ID_Cliente": [new_id],
                 "Nome": [name],
+                "CPF": [doc],
                 "Endereço": [address],
                 "Bairro": [district],
                 "Cidade": [city],
                 "Telefone": [phone],
                 "E-mail": [email],
+                "Nr. Calçado": [numero_pe],
                 "Observações": [obs],
             }
         )
@@ -80,7 +83,7 @@ filtered_data_name = existing_data[existing_data["Nome"] == name]
 
 # include an if condition in case name is not empty
 if name:    
-    st.dataframe(filtered_data_name[["ID_Cliente", "Nome", "Endereço", "Bairro", "Cidade", "Telefone", "E-mail", "Observações"]], hide_index=True)
+    st.dataframe(filtered_data_name[["ID_Cliente", "Nome", "CPF", "Endereço", "Bairro", "Cidade", "Telefone", "E-mail", "Nr. Calçado", "Observações"]], hide_index=True)
     
 else:
     st.markdown('<p style="color:red; font-style:italic;">Selecione um cliente.</p>', unsafe_allow_html=True)
