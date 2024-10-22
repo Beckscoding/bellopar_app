@@ -19,8 +19,22 @@ st.divider()
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # Fetch existing vendors data
-existing_data = conn.read(worksheet="Clientes", usecols=list(range(9)), ttl=1)
+existing_data = conn.read(worksheet="Clientes", usecols=list(range(10)), ttl=1)
 existing_data = existing_data.dropna(how="all")
+
+# Get the list of client names
+client_names = existing_data["Nome"].tolist()  # Convert to a list
+
+name = st.selectbox(label="Consultar Cliente", options=client_names, index=None)
+
+filtered_data_name = existing_data[existing_data["Nome"] == name]
+
+# include an if condition in case name is not empty
+if name:    
+    st.dataframe(filtered_data_name[["ID_Cliente", "Nome", "CPF", "Endereço", "Bairro", "Cidade", "Telefone", "E-mail", "Nr. Calçado", "Observações"]], hide_index=True)
+    
+else:
+    st.markdown('<p style="color:red; font-style:italic;">Selecione um cliente.</p>', unsafe_allow_html=True)
 
 # Check if the ID column exists, and find the max ID
 if "ID_Cliente" in existing_data.columns:
@@ -73,20 +87,6 @@ with st.form(key="my_form", clear_on_submit=True):
         conn.update(worksheet="Clientes", data=updated_data)
 
         st.success("Cliente adicionado com sucesso!")
-
-# Get the list of client names
-client_names = existing_data["Nome"].tolist()  # Convert to a list
-
-name = st.selectbox(label="Consultar Cliente", options=client_names, index=None)
-
-filtered_data_name = existing_data[existing_data["Nome"] == name]
-
-# include an if condition in case name is not empty
-if name:    
-    st.dataframe(filtered_data_name[["ID_Cliente", "Nome", "CPF", "Endereço", "Bairro", "Cidade", "Telefone", "E-mail", "Nr. Calçado", "Observações"]], hide_index=True)
-    
-else:
-    st.markdown('<p style="color:red; font-style:italic;">Selecione um cliente.</p>', unsafe_allow_html=True)
 
 
 # Widget para exclusão de um cadastro de cliente.  
