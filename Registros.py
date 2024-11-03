@@ -97,13 +97,19 @@ if operation_type == "Venda":
     with st.form(key="my_form", clear_on_submit=True):
             
         product = st.text_input(label="Produtos vendidos")
-        col1, col2 = st.columns([1, 2])
+        col1, col2, col3, col4 = st.columns(4)
         parcela1 = col1.number_input(label="Parcela 1", step=10.00)
         parcela2 = col1.number_input(label="Parcela 2", step=10.00)
         parcela3 = col1.number_input(label="Parcela 3", step=10.00)
-        due_date1 = col2.date_input(label="Data de Vencimento 1", format="DD/MM/YYYY")
-        due_date2 = col2.date_input(label="Data de Vencimento 2", format="DD/MM/YYYY")
-        due_date3 = col2.date_input(label="Data de Vencimento 3", format="DD/MM/YYYY")
+        parcela4 = col3.number_input(label="Parcela 4", step=10.00)
+        parcela5 = col3.number_input(label="Parcela 5", step=10.00)
+        parcela6 = col3.number_input(label="Parcela 6", step=10.00)
+        due_date1 = col2.date_input(label="Data de Vencimento 1", format="DD/MM/YYYY", value=None)
+        due_date2 = col2.date_input(label="Data de Vencimento 2", format="DD/MM/YYYY", value=None)
+        due_date3 = col2.date_input(label="Data de Vencimento 3", format="DD/MM/YYYY", value=None)
+        due_date4 = col4.date_input(label="Data de Vencimento 4", format="DD/MM/YYYY", value=None)
+        due_date5 = col4.date_input(label="Data de Vencimento 5", format="DD/MM/YYYY", value=None)
+        due_date6 = col4.date_input(label="Data de Vencimento 6", format="DD/MM/YYYY", value=None)
         obs = st.text_input(label="Observações")
 
         # Create a button to submit the form
@@ -149,8 +155,54 @@ if operation_type == "Venda":
                         "Observações": [obs],
                     }
                 )
+
+            if parcela4 > 0:
+                new_row4 = pd.DataFrame(
+                   {   "ID_reg": [new_id],
+                        "Data":[data_formatada],
+                        "Nome": [name],
+                        "Produto": [product],
+                        "Valor": [parcela3],
+                        "Vencimento": [due_date4],
+                        "Tipo": [operation_type],
+                        "Observações": [obs],
+                    }
+                )
+
+            if parcela5 > 0:
+                new_row5 = pd.DataFrame(
+                   {   "ID_reg": [new_id],
+                        "Data":[data_formatada],
+                        "Nome": [name],
+                        "Produto": [product],
+                        "Valor": [parcela3],
+                        "Vencimento": [due_date5],
+                        "Tipo": [operation_type],
+                        "Observações": [obs],
+                    }
+                )
+
+            if parcela6 > 0:
+                new_row6 = pd.DataFrame(
+                   {   "ID_reg": [new_id],
+                        "Data":[data_formatada],
+                        "Nome": [name],
+                        "Produto": [product],
+                        "Valor": [parcela3],
+                        "Vencimento": [due_date6],
+                        "Tipo": [operation_type],
+                        "Observações": [obs],
+                    }
+                )
+
             # Append the new row to the existing data
-            if parcela3 > 0:
+            if parcela6 > 0:
+                existing_data = pd.concat([existing_data, new_row1, new_row2, new_row3, new_row4, new_row5, new_row6], ignore_index=True)
+            elif parcela5 > 0:
+                existing_data = pd.concat([existing_data, new_row1, new_row2, new_row3, new_row4, new_row5], ignore_index=True)
+            elif parcela4 > 0:
+                existing_data = pd.concat([existing_data, new_row1, new_row2, new_row3, new_row4], ignore_index=True)
+            elif parcela3 > 0:
                 existing_data = pd.concat([existing_data, new_row1, new_row2, new_row3], ignore_index=True)
             elif parcela2 > 0:
                 existing_data = pd.concat([existing_data, new_row1, new_row2], ignore_index=True)
@@ -169,7 +221,7 @@ elif operation_type == "Pagamento":
         
         col1, col2 = st.columns([1, 2])
         value_paid = col1.number_input(label="Valor Pago", step=10.00)
-        date_paid = col2.date_input(label="Data do Pagamento", format="DD/MM/YYYY")
+        date_paid = col2.date_input(label="Data do Pagamento", format="DD/MM/YYYY", value=None)
         payment_selected = col2.selectbox(label="Como foi realizado o pagamento?", options=payment_options, index=None, placeholder="Escolha uma opção")
         obs = col1.text_input(label="Observações")
 
