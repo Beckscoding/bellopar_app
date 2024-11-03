@@ -89,7 +89,7 @@ else:
 today = date.today()
 data_formatada = today.strftime("%d/%m/%Y")    
 
-operation_type = st.radio(label="Escolha o tipo de operação que deseja registrar!", options=["Venda", "Pagamento"], horizontal=True, index=None)
+operation_type = st.radio(label="Escolha o tipo de operação que deseja registrar!", options=["Venda", "Pagamento", "Devolução"], horizontal=True, index=None)
 
 # If operation type equals "Venda" create a form
 if operation_type == "Venda":
@@ -242,6 +242,40 @@ elif operation_type == "Pagamento":
                     "Vencimento": [date_paid],
                     "Tipo": [operation_type],
                     "Método Pagamento": [payment_selected],
+                    "Observações": [obs],
+                }
+            )
+            
+            existing_data = pd.concat([existing_data, new_row], ignore_index=True)
+            conn.update(worksheet="Registros", data=existing_data)
+            st.rerun()
+
+elif operation_type == "Devolução":
+    st.write("Registre abaixo uma nova operação de devolução para este cliente.")
+    with st.form(key="my_form_dev", clear_on_submit=True):
+        
+        col1, col2 = st.columns([1, 2])
+        value_paid = col1.number_input(label="Valor", step=10.00)
+        date_paid = col2.date_input(label="Data da Devolução", format="DD/MM/YYYY", value=None)
+        obs = col1.text_input(label="Observações")
+
+         # Create a button to submit the form
+        submit_pagamento = st.form_submit_button(label="Registrar Devolução")
+        if submit_pagamento:
+            # Increment the ID for the new row
+            new_id = last_id + 1
+            value_paid = -1 * value_paid
+
+                # Create a new row with the form data
+            new_row = pd.DataFrame(
+                {   "ID_reg": [new_id],
+                    "Data":[data_formatada],
+                    "Nome": [name],
+                    "Produto": "Devolução",
+                    "Valor": [value_paid],
+                    "Vencimento": [date_paid],
+                    "Tipo": [operation_type],
+                    "Método Pagamento": "",
                     "Observações": [obs],
                 }
             )
