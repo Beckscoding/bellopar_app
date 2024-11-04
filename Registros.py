@@ -113,10 +113,11 @@ if operation_type == "Venda":
         obs = st.text_input(label="Observações")
 
         # Create a button to submit the form
-        submit_venda = st.form_submit_button(label="Submit")
+        submit_venda = st.form_submit_button(label="Registrar Venda")
         if submit_venda:
             if due_date1 is None:
                 st.error("Por favor, selecione ao menos uma data de vencimento.")
+                st.stop()
             else:
             # Increment the ID for the new row
                 new_id = last_id + 1
@@ -217,7 +218,7 @@ if operation_type == "Venda":
             st.rerun()
             
 
-        # Append the new row to the existing data
+       
 elif operation_type == "Pagamento":
     st.write("Registre abaixo uma nova operação de pagamento para este cliente.")
     with st.form(key="my_form", clear_on_submit=True):
@@ -229,10 +230,11 @@ elif operation_type == "Pagamento":
         obs = col1.text_input(label="Observações")
 
          # Create a button to submit the form
-        submit_pagamento = st.form_submit_button(label="Submit")
+        submit_pagamento = st.form_submit_button(label="Registrar Pagamento")
         if submit_pagamento:
             if date_paid is None:
-                st.error("Por favor, selecione uma data para o pagamento.")
+                st.error("Por favor, selecione a data de pagamento.")
+                st.stop()
             else:
 
                 # Increment the ID for the new row
@@ -267,58 +269,28 @@ elif operation_type == "Devolução":
         date_returned = col2.date_input(label="Data da Devolução", format="DD/MM/YYYY", value=None)
         obs = col1.text_input(label="Observações")
          # Create a button to submit the form
-        submit_pagamento = st.form_submit_button(label="Registrar Devolução")
-        if submit_pagamento:
-            # Increment the ID for the new row
-            new_id = last_id + 1
-            value_paid = -1 * value_paid
-                # Create a new row with the form data
-            new_row = pd.DataFrame(
-                {   "ID_reg": [new_id],
-                    "Data":[data_formatada],
-                    "Nome": [name],
-                    "Produto": "Devolução",
-                    "Valor": [value_paid],
-                    "Vencimento": [date_returned],
-                    "Tipo": [operation_type],
-                    "Método Pagamento": "",
-                    "Observações": [obs],
-                }
-            )
-            
-            existing_data = pd.concat([existing_data, new_row], ignore_index=True)
-            conn.update(worksheet="Registros", data=existing_data)
-            st.rerun()
-
-elif operation_type == "Devolução":
-    st.write("Registre abaixo uma nova operação de devolução para este cliente.")
-    with st.form(key="my_form_dev", clear_on_submit=True):
-        
-        col1, col2 = st.columns([1, 2])
-        value_paid = col1.number_input(label="Valor", step=10.00)
-        date_paid = col2.date_input(label="Data da Devolução", format="DD/MM/YYYY", value=None)
-        obs = col1.text_input(label="Observações")
-
-         # Create a button to submit the form
-        submit_pagamento = st.form_submit_button(label="Registrar Devolução")
-        if submit_pagamento:
-            # Increment the ID for the new row
-            new_id = last_id + 1
-            value_paid = -1 * value_paid
-
-                # Create a new row with the form data
-            new_row = pd.DataFrame(
-                {   "ID_reg": [new_id],
-                    "Data":[data_formatada],
-                    "Nome": [name],
-                    "Produto": "Devolução",
-                    "Valor": [value_paid],
-                    "Vencimento": [date_paid],
-                    "Tipo": [operation_type],
-                    "Método Pagamento": "",
-                    "Observações": [obs],
-                }
-            )
+        submit_return = st.form_submit_button(label="Registrar Devolução")
+        if submit_return:
+            if date_returned is None:
+                st.error("Por favor, selecione a data de devolução.")
+                st.stop()
+            else:
+                # Increment the ID for the new row
+                new_id = last_id + 1
+                value_paid = -1 * value_paid
+                    # Create a new row with the form data
+                new_row = pd.DataFrame(
+                    {   "ID_reg": [new_id],
+                        "Data":[data_formatada],
+                        "Nome": [name],
+                        "Produto": "Devolução",
+                        "Valor": [value_paid],
+                        "Vencimento": [date_returned],
+                        "Tipo": [operation_type],
+                        "Método Pagamento": "",
+                        "Observações": [obs],
+                    }
+                )
             
             existing_data = pd.concat([existing_data, new_row], ignore_index=True)
             conn.update(worksheet="Registros", data=existing_data)
