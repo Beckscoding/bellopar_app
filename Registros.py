@@ -89,7 +89,7 @@ else:
 today = date.today()
 data_formatada = today.strftime("%d/%m/%Y")    
 
-operation_type = st.radio(label="Escolha o tipo de operação que deseja registrar!", options=["Venda", "Pagamento"], horizontal=True, index=None)
+operation_type = st.radio(label="Escolha o tipo de operação que deseja registrar!", options=["Venda", "Pagamento", "Devolução"], horizontal=True, index=None)
 
 # If operation type equals "Venda" create a form
 if operation_type == "Venda":
@@ -115,85 +115,88 @@ if operation_type == "Venda":
         # Create a button to submit the form
         submit_venda = st.form_submit_button(label="Submit")
         if submit_venda:
-        # Increment the ID for the new row
-            new_id = last_id + 1
+            if due_date1 is None:
+                st.error("Por favor, selecione ao menos uma data de vencimento.")
+            else:
+            # Increment the ID for the new row
+                new_id = last_id + 1
 
-                # Create a new row with the form data
-            if parcela1 > 0:
-                new_row1 = pd.DataFrame(
+                    # Create a new row with the form data
+                if parcela1 > 0:
+                    new_row1 = pd.DataFrame(
+                        {   "ID_reg": [new_id],
+                            "Data":[data_formatada],
+                            "Nome": [name],
+                            "Produto": [product],
+                            "Valor": [parcela1],
+                            "Vencimento": [due_date1],
+                            "Tipo": [operation_type],
+                            "Observações": [obs],
+                        }
+                    )
+                if parcela2 > 0:
+                    new_row2 = pd.DataFrame(
+                        {   "ID_reg": [new_id],
+                            "Data":[data_formatada],
+                            "Nome": [name],
+                            "Produto": [product],
+                            "Valor": [parcela2],
+                            "Vencimento": [due_date2],
+                            "Tipo": [operation_type],
+                            "Observações": [obs],
+                        }
+                    )
+                if parcela3 > 0:
+                    new_row3 = pd.DataFrame(
                     {   "ID_reg": [new_id],
-                        "Data":[data_formatada],
-                        "Nome": [name],
-                        "Produto": [product],
-                        "Valor": [parcela1],
-                        "Vencimento": [due_date1],
-                        "Tipo": [operation_type],
-                        "Observações": [obs],
-                    }
-                )
-            if parcela2 > 0:
-                new_row2 = pd.DataFrame(
+                            "Data":[data_formatada],
+                            "Nome": [name],
+                            "Produto": [product],
+                            "Valor": [parcela3],
+                            "Vencimento": [due_date3],
+                            "Tipo": [operation_type],
+                            "Observações": [obs],
+                        }
+                    )
+
+                if parcela4 > 0:
+                    new_row4 = pd.DataFrame(
                     {   "ID_reg": [new_id],
-                        "Data":[data_formatada],
-                        "Nome": [name],
-                        "Produto": [product],
-                        "Valor": [parcela2],
-                        "Vencimento": [due_date2],
-                        "Tipo": [operation_type],
-                        "Observações": [obs],
-                    }
-                )
-            if parcela3 > 0:
-                new_row3 = pd.DataFrame(
-                   {   "ID_reg": [new_id],
-                        "Data":[data_formatada],
-                        "Nome": [name],
-                        "Produto": [product],
-                        "Valor": [parcela3],
-                        "Vencimento": [due_date3],
-                        "Tipo": [operation_type],
-                        "Observações": [obs],
-                    }
-                )
+                            "Data":[data_formatada],
+                            "Nome": [name],
+                            "Produto": [product],
+                            "Valor": [parcela3],
+                            "Vencimento": [due_date4],
+                            "Tipo": [operation_type],
+                            "Observações": [obs],
+                        }
+                    )
 
-            if parcela4 > 0:
-                new_row4 = pd.DataFrame(
-                   {   "ID_reg": [new_id],
-                        "Data":[data_formatada],
-                        "Nome": [name],
-                        "Produto": [product],
-                        "Valor": [parcela3],
-                        "Vencimento": [due_date4],
-                        "Tipo": [operation_type],
-                        "Observações": [obs],
-                    }
-                )
+                if parcela5 > 0:
+                    new_row5 = pd.DataFrame(
+                    {   "ID_reg": [new_id],
+                            "Data":[data_formatada],
+                            "Nome": [name],
+                            "Produto": [product],
+                            "Valor": [parcela3],
+                            "Vencimento": [due_date5],
+                            "Tipo": [operation_type],
+                            "Observações": [obs],
+                        }
+                    )
 
-            if parcela5 > 0:
-                new_row5 = pd.DataFrame(
-                   {   "ID_reg": [new_id],
-                        "Data":[data_formatada],
-                        "Nome": [name],
-                        "Produto": [product],
-                        "Valor": [parcela3],
-                        "Vencimento": [due_date5],
-                        "Tipo": [operation_type],
-                        "Observações": [obs],
-                    }
-                )
-
-            if parcela6 > 0:
-                new_row6 = pd.DataFrame(
-                   {   "ID_reg": [new_id],
-                        "Data":[data_formatada],
-                        "Nome": [name],
-                        "Produto": [product],
-                        "Valor": [parcela3],
-                        "Vencimento": [due_date6],
-                        "Tipo": [operation_type],
-                        "Observações": [obs],
-                    }
-                )
+                if parcela6 > 0:
+                    new_row6 = pd.DataFrame(
+                    {   "ID_reg": [new_id],
+                            "Data":[data_formatada],
+                            "Nome": [name],
+                            "Produto": [product],
+                            "Valor": [parcela3],
+                            "Vencimento": [due_date6],
+                            "Tipo": [operation_type],
+                            "Observações": [obs],
+                        }
+                    )
 
             # Append the new row to the existing data
             if parcela6 > 0:
@@ -228,20 +231,57 @@ elif operation_type == "Pagamento":
          # Create a button to submit the form
         submit_pagamento = st.form_submit_button(label="Submit")
         if submit_pagamento:
+            if date_paid is None:
+                st.error("Por favor, selecione uma data para o pagamento.")
+            else:
+
+                # Increment the ID for the new row
+                new_id = last_id + 1
+                value_paid = -1 * value_paid
+
+                    # Create a new row with the form data
+                new_row = pd.DataFrame(
+                    {   "ID_reg": [new_id],
+                        "Data":[data_formatada],
+                        "Nome": [name],
+                        "Produto": "Pagamento",
+                        "Valor": [value_paid],
+                        "Vencimento": [date_paid],
+                        "Tipo": [operation_type],
+                        "Método Pagamento": [payment_selected],
+                        "Observações": [obs],
+                    }
+                )
+            
+            existing_data = pd.concat([existing_data, new_row], ignore_index=True)
+            conn.update(worksheet="Registros", data=existing_data)
+            st.rerun()
+
+
+elif operation_type == "Devolução":
+    st.write("Registre abaixo uma nova operação de devolução para este cliente.")
+    with st.form(key="my_form_dev", clear_on_submit=True):
+        
+        col1, col2 = st.columns([1, 2])
+        value_paid = col1.number_input(label="Valor", step=10.00)
+        date_returned = col2.date_input(label="Data da Devolução", format="DD/MM/YYYY", value=None)
+        obs = col1.text_input(label="Observações")
+         # Create a button to submit the form
+        submit_pagamento = st.form_submit_button(label="Registrar Devolução")
+        if submit_pagamento:
             # Increment the ID for the new row
             new_id = last_id + 1
             value_paid = -1 * value_paid
-
                 # Create a new row with the form data
             new_row = pd.DataFrame(
                 {   "ID_reg": [new_id],
                     "Data":[data_formatada],
                     "Nome": [name],
-                    "Produto": "Pagamento",
+                    "Produto": "Devolução",
                     "Valor": [value_paid],
-                    "Vencimento": [date_paid],
+                    "Vencimento": [date_returned],
                     "Tipo": [operation_type],
-                    "Método Pagamento": [payment_selected],
+                    "Método Pagamento": "",
                     "Observações": [obs],
                 }
             )
